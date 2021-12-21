@@ -6,6 +6,7 @@ namespace myfirstapplication
     {
         static void Main(string[] args)
         {
+            //add comment for lesson
             System.Console.WriteLine("Введите имя пользователя:");
             string userNAme = System.Console.ReadLine();
             System.Console.WriteLine($"Привет, {userNAme}, сегодня {System.DateTime.Now}!");
