@@ -4,7 +4,7 @@ namespace myfirstapplication
 {
     class Program
     {
-        enum mesEnum
+        enum mesEnum //перечисление задача 2, третья реализация
         {
             Январь = 1,
             Февраль,
@@ -78,7 +78,7 @@ namespace myfirstapplication
                     return;
 
             }
-            //вторая реализация, пришлось посмотреть шаблоны вывода
+            //вторая реализация, мне кажется самая короткая
             if(Convert.ToInt32(monthNow) >12)
             {
                 System.Console.WriteLine("Нет месяца с таким порядковым номером!");
@@ -88,6 +88,11 @@ namespace myfirstapplication
             System.Console.WriteLine(WhatIsMonth.ToString("MMMM"));
 
             //третья реализация
+            if (Convert.ToInt32(monthNow) > 12) //условие дублирую, так как показываю полную реализацию задачи, хотя мб стоило их еще и инкапсулировать друг от друга (хмммм...), или в функцию вынести, но мы пока не проходили :)
+            {
+                System.Console.WriteLine("Нет месяца с таким порядковым номером!");
+                return;
+            }
 
             System.Console.WriteLine($"Текущий месяц {(mesEnum)Convert.ToInt32(monthNow)}");
 
@@ -128,6 +133,33 @@ namespace myfirstapplication
             System.Console.WriteLine("|                     |");
             System.Console.WriteLine("|---------------------|");
 
+            //Задание 5
+            switch (monthNow)
+            {
+                case "1":
+                case "2":
+                case "12":
+                    if (tempMid < 0) System.Console.WriteLine("Дождливая Зима!");
+                    break;
+            }
+
+            //Задание 6
+            DaysWeek ofis1 = (DaysWeek)0b_0011110;
+            DaysWeek ofis2 = (DaysWeek)0b_1111111;
+            System.Console.WriteLine($"Офис 1 работает по следующему графику: {ofis1}. С 9 до 18:00 с перерывом на обед с 13:00 до 14:00.");
+            System.Console.WriteLine($"Офис 2 работает по следующему графику {ofis2}. С 0:05 до 23:55. Перерыв на обед не предусмотрен!");
+            
+        }
+        [Flags]
+        enum DaysWeek //Перечисление к задаче 6
+        {
+            понедельник = 0b_0000001,
+            вторник =     0b_0000010,
+            среда =       0b_0000100,
+            четверг =     0b_0001000,
+            пятница     = 0b_0010000,
+            суббота     = 0b_0100000,
+            вокресенье  = 0b_1000000
         }
     }
 }
