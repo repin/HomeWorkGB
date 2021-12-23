@@ -31,6 +31,7 @@ namespace myfirstapplication
             //оказалось что конвертировать во float нельзя :(
             double tempMid = (Convert.ToDouble(tempMin) +Convert.ToDouble(tempMax))/2;
             System.Console.WriteLine($"Средняя температура за сутки {tempMid.ToString()} градуса");
+
             System.Console.ReadLine();
             //Задача 2
             System.Console.WriteLine("Введите порядковый номер текущего месяца");
