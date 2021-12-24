@@ -7,6 +7,7 @@ namespace myfirstapplication
         static void Main(string[] args)
         {
             {
+                //новый коммент для пул реквеста ><
                 //задание №2: телефонный справочник
                 string[][] telKniga = new string[5][];
                 for (int i = 0; i < telKniga.Length; i++) telKniga[i] = new string[2];
