@@ -1,205 +1,116 @@
 ﻿using System;
+using System.IO;
+using System.Text.Json;
+using Newtonsoft.Json;
+
 
 namespace myfirstapplication
 {
     class Program
     {
         static void Main(string[] args)
-        {
+        {            
+            //Задание 1
             {
-                //задание №2: телефонный справочник
-                string[][] telKniga = new string[5][];
-                for (int i = 0; i < telKniga.Length; i++) telKniga[i] = new string[2];
-                telKniga[0][0] = "Иванов Иван Иванович";
-                telKniga[0][1] = "+7-777-777-77-77";
-                telKniga[1][0] = "Петров Петр Петрович";
-                telKniga[1][1] = "+8-777-777-77-77";
-                telKniga[2][0] = "Алексейв Алексей Алексеевич";
-                telKniga[2][1] = "+9-777-777-77-77";
-                telKniga[3][0] = "Дмитриев Дмитрий Дмитриевич";
-                telKniga[3][1] = "+3-777-777-77-77";
-                telKniga[4][0] = "Кваснов Игорь Сергеевич";
-                telKniga[4][1] = "+4-777-777-77-77";
-                for (int i = 0; i < telKniga.Length; i++)
-                {
-                    Console.WriteLine($"Запись №{i}: ");
-                    Console.WriteLine($"ФИО: {telKniga[i][0]}, телефон: {telKniga[i][1]}");
-                }
-                Console.ReadLine();
+                Console.WriteLine("Ввежите произвольный набор данных"); //запрос данных
+                string inputDAta = Console.ReadLine();//чтение данных
+                File.WriteAllText(path: "example.txt", inputDAta);//запись данных в файл
+                Console.WriteLine(File.Exists(path: "example.txt")); //проверка, что файл создан
+                Console.ReadKey(); //Ожидание действия пользователя
             }
-
-            //Задание №1: Вывод значений двумерного массива по диагонали
-            //исходя из комментов в телеграмме похоже я ТЗ неправильно понял :D
-            //и надо выводить было просто значения из массива 
-
-
+            
+            //Задание 2
             {
-                int[,] array = new int[3, 3];
-                array[0, 0] = 1;
-                array[0, 1] = 2;
-                array[0, 2] = 7;
-                array[1, 0] = 3;
-                array[1, 1] = 4;
-                array[1, 2] = 8;
-                array[2, 0] = 5;
-                array[2, 1] = 6;
-                array[2, 2] = 9;
-
-                int leghtArray = array.Length;
-                int k = 0,
-                    l = 0,
-                    d = 0;
-                for (int i = 0; i < leghtArray; i++)
+                File.AppendAllText(path: "startup.txt", contents: DateTime.Now.ToString("HH:mm:ss") + Environment.NewLine);
+                Console.WriteLine($"В файл добавлена следующая строка {DateTime.Now.ToString("HH:mm:ss")}");            
+            }
+            
+            //Задание 3
+            {
+                Console.WriteLine("Введите с клавиатуры произвольный набор чисел от 0 до 255");
+                string inputDAta = Console.ReadLine();
+                string[] array = inputDAta.Split(' ');
+                byte[] arrayb = new byte[array.Length];
+                for (int i=0;i<array.Length;i++)
                 {
-                    for (int j = 0; j < leghtArray; j++)
-                    {
-                        if (i == j)
-                        {
-                            Console.Write(array[k, l] + " ");
-                            if (l < array.GetLength(1) - 1)
-                            {
-                                l++;
-                            }
-                            else
-                            {
-                                k++;
-                                l = 0;
-                            }
-
-                        }
-                        else
-                        {
-                            Console.Write(" " + " ");
-                        }
-
-                    }
-                    Console.WriteLine();
+                    arrayb[i] = Convert.ToByte(array[i]);
                 }
-                Console.ReadLine();
+                File.WriteAllBytes("bytes.bin", arrayb);
+                Console.WriteLine("Файл записан");
+                byte[] arrayf = File.ReadAllBytes("bytes.bin");
 
             }
-
-
-            //Задача 3
-            {
-                Console.WriteLine("Введите строку:");
-                string text = Console.ReadLine();
-                for (int i = text.Length - 1; i != -1; --i)
-                {
-                    Console.Write(text[i]);
-                }
-                Console.ReadLine();
+            
+            //Задание 4
+            { 
+                string path = DirectoryExists();
+                Console.WriteLine("Как глубоко погружаемся? Введите число:");
+                int depth = Convert.ToInt32(Console.ReadLine());
+                string nameFile = "FilePath.txt";
+                File.WriteAllText(nameFile, "");
+                SaveTreePath(path, nameFile, "", depth);
             }
-
-
-            //Задача 4, попробовал выводить корабли относительно случайно, с использованием мс из времени
+            
+            //задание 5
             {
-                string[,] pole = new string[10, 10];
-                for (int i = 0; i < pole.GetLength(0); i++)
+                ToDo toDo = new ToDo();
+                if (toDo.fileExist)
                 {
-                    int k = DateTime.Now.Millisecond;
-                    k = k - (int)(k / 10) * 10;
-                    for (int j = 0; j < pole.GetLength(1); j++)
-                    {
-                        pole[i, j] = "O";
-                        if (j == k || (i == k / 2 && i == j) || (i == k / 3 && i == j))
-                        {
-                            pole[i, j] = "X";
+                    string json = File.ReadAllText("ToDo.json");
+                    toDo = Newtonsoft.Json.JsonConvert.DeserializeObject<ToDo>(json);
 
-                        }
-                        Console.Write($"{pole[i, j]} ");
-                    }
-                    Console.WriteLine();
                 }
-
-                //тут начинается код автоматической игры компа )
-                //Комп не видит поле и выбирает случайное место
-                //Если в случайном месте есть корабль - то стреляет иставит P - popal, если корабля нет - ставит M - mimo
-                //Если попадает в поле, куда уже стрелял, то начинает перебором искать поле, в которое ещё не стрелял и стреляет в него
-                //По итогу выводит информацию в консоль по шагам и матрицу выстрелов :) (делал в последний момент, поэтому не оптимизировал алгоритм, но по анализу все определяет правильно
-                string fight = "";
-                while (fight != "д" || fight != "н")
+                toDo.Hello();
+                while (true)
                 {
-                    Console.WriteLine("Запустить автоматический бой? (д\\н)");
-
-                    fight = Console.ReadLine();
-                    if (fight == "д")
+                    string resume;
+                    resume = toDo.Command(Console.ReadLine());
+                    if (toDo.exit)
                     {
-
-                        bool opt = true;
-                        while (opt)
-                        {
-
-                            int n = DateTime.Now.Millisecond;
-                            int p = (int)(n / 10) - (int)(n / 100) * 10; //получаем случайное значение р
-                            n = n - (int)(n / 10) * 10; //получаем случайное значение n
-                            if (pole[n, p] == "X") //стреляем в случайном месте, смотрим есть ли там корабль, если есть - помечаем попадание
-                            {
-                                Console.WriteLine($"Попадание в цель по адресу: {n} {p}");
-                            }
-                            else if (pole[n, p] == "O")
-                            {
-                                Console.WriteLine($"Промазали по адресу: {n} {p}");
-                                pole[n, p] = "M";
-                            }
-                            else
-                            {
-                                int z = 100;
-                                while (opt)
-                                {
-
-                                    if (n == 10)
-                                    {
-                                        n = 0;
-                                        p++;
-                                    }
-                                    if (p == 10)
-                                    {
-                                        p = 0;
-
-                                    }
-                                    if (pole[n, p] == "X")
-                                    {
-                                        pole[n, p] = "P";
-                                        Console.WriteLine($"Попадание цель по адресу: {n} {p}");
-                                        break;
-                                    }
-                                    else if (pole[n, p] == "O")
-                                    {
-                                        Console.WriteLine($"Промазали по адресу: {n} {p}");
-                                        pole[n, p] = "M";
-                                    }
-                                    else
-                                    {
-                                        n++;
-                                    }
-                                    if (z == 0)
-                                    {
-                                        Console.WriteLine("Поиск кораблей закончен");
-                                        opt = false;
-                                        break;
-                                    }
-                                    z--;
-                                }
-                            }
-                        }
-                        for (int i = 0; i < 10; i++)
-                        {
-                            for (int j = 0; j < 10; j++)
-                            {
-                                Console.Write(pole[i, j] + " ");
-                            }
-                            Console.WriteLine();
-                        }
-                    }
-                    else if (fight == "н")
-                    {
+                        string jsonOut = JsonConvert.SerializeObject(toDo);
+                        File.WriteAllText("ToDo.json",jsonOut);
+                        Console.WriteLine(jsonOut);
+                        Console.ReadLine();
                         break;
                     }
                 }
-
             }
 
+        }
+        static string DirectoryExists()
+        {
+            Console.WriteLine("Введите существующий путь к папке:");
+            string path;
+            while (true)
+            {
+                path = Console.ReadLine();
+                
+                if (string.IsNullOrEmpty(path) || !Directory.Exists(path))
+                {
+                    Console.WriteLine("Введите корректный путь к папке");
+                    continue; 
+                }
+                else
+                {
+                    return path;
+                }
+            }
+        }
+
+        static void SaveTreePath(string path, string nameFile, string otstup, int depth)
+        {
+            string[] entries = Directory.GetFileSystemEntries(path);
+            foreach (string i in entries)
+            {
+                string text = otstup + Path.GetFileName(i);
+                Console.WriteLine(text);
+                File.AppendAllText(nameFile, text+Environment.NewLine);
+                if (otstup.Length == depth) return;
+                if (Directory.Exists(i))
+                {
+                    SaveTreePath(i, nameFile, otstup+"-", depth);
+                }
+            }
         }
     }
 }
