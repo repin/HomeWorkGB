@@ -9,8 +9,7 @@ namespace myfirstapplication
     class Program
     {
         static void Main(string[] args)
-        {
-            
+        {            
             //Задание 1
             {
                 Console.WriteLine("Ввежите произвольный набор данных"); //запрос данных
@@ -39,6 +38,7 @@ namespace myfirstapplication
                 File.WriteAllBytes("bytes.bin", arrayb);
                 Console.WriteLine("Файл записан");
                 byte[] arrayf = File.ReadAllBytes("bytes.bin");
+
             }
             
             //Задание 4
@@ -49,7 +49,6 @@ namespace myfirstapplication
                 string nameFile = "FilePath.txt";
                 File.WriteAllText(nameFile, "");
                 SaveTreePath(path, nameFile, "", depth);
-
             }
             
             //задание 5
@@ -78,7 +77,6 @@ namespace myfirstapplication
             }
 
         }
-
         static string DirectoryExists()
         {
             Console.WriteLine("Введите существующий путь к папке:");
@@ -90,8 +88,7 @@ namespace myfirstapplication
                 if (string.IsNullOrEmpty(path) || !Directory.Exists(path))
                 {
                     Console.WriteLine("Введите корректный путь к папке");
-                    continue;
-                    
+                    continue; 
                 }
                 else
                 {
