@@ -4,201 +4,180 @@ namespace myfirstapplication
 {
     class Program
     {
+        enum season
+        {
+            Winter = 1,
+            Spring = 2,
+            Summer = 3,
+            Autumn = 4
+        }
         static void Main(string[] args)
         {
+            //задание 1
             {
-                //задание №2: телефонный справочник
-                string[][] telKniga = new string[5][];
-                for (int i = 0; i < telKniga.Length; i++) telKniga[i] = new string[2];
-                telKniga[0][0] = "Иванов Иван Иванович";
-                telKniga[0][1] = "+7-777-777-77-77";
-                telKniga[1][0] = "Петров Петр Петрович";
-                telKniga[1][1] = "+8-777-777-77-77";
-                telKniga[2][0] = "Алексейв Алексей Алексеевич";
-                telKniga[2][1] = "+9-777-777-77-77";
-                telKniga[3][0] = "Дмитриев Дмитрий Дмитриевич";
-                telKniga[3][1] = "+3-777-777-77-77";
-                telKniga[4][0] = "Кваснов Игорь Сергеевич";
-                telKniga[4][1] = "+4-777-777-77-77";
-                for (int i = 0; i < telKniga.Length; i++)
+                string[] Name;
+                string[] LastName;
+                string[] Paronymc;
+                Name = GetMassive("Вася", "Петя", "Дима");
+                LastName = GetMassive("Иванов", "Петров", "Сидовров");
+                Paronymc = GetMassive("Владимирович", "Инокеньтьевич", "Абрамович");
+                for (int i = 0; i < Name.Length; i++)
                 {
-                    Console.WriteLine($"Запись №{i}: ");
-                    Console.WriteLine($"ФИО: {telKniga[i][0]}, телефон: {telKniga[i][1]}");
-                }
-                Console.ReadLine();
-            }
-
-            //Задание №1: Вывод значений двумерного массива по диагонали
-            //исходя из комментов в телеграмме похоже я ТЗ неправильно понял :D
-            //и надо выводить было просто значения из массива 
-
-
-            {
-                int[,] array = new int[3, 3];
-                array[0, 0] = 1;
-                array[0, 1] = 2;
-                array[0, 2] = 7;
-                array[1, 0] = 3;
-                array[1, 1] = 4;
-                array[1, 2] = 8;
-                array[2, 0] = 5;
-                array[2, 1] = 6;
-                array[2, 2] = 9;
-
-                int leghtArray = array.Length;
-                int k = 0,
-                    l = 0,
-                    d = 0;
-                for (int i = 0; i < leghtArray; i++)
-                {
-                    for (int j = 0; j < leghtArray; j++)
-                    {
-                        if (i == j)
-                        {
-                            Console.Write(array[k, l] + " ");
-                            if (l < array.GetLength(1) - 1)
-                            {
-                                l++;
-                            }
-                            else
-                            {
-                                k++;
-                                l = 0;
-                            }
-
-                        }
-                        else
-                        {
-                            Console.Write(" " + " ");
-                        }
-
-                    }
-                    Console.WriteLine();
+                    string FullName = GetFullName(Name[i], LastName[i], Paronymc[i]);
+                    Console.WriteLine($"ФИО: {FullName}");
                 }
                 Console.ReadLine();
 
             }
-
-
-            //Задача 3
+            //Задание 2
             {
-                Console.WriteLine("Введите строку:");
-                string text = Console.ReadLine();
-                for (int i = text.Length - 1; i != -1; --i)
+                Console.WriteLine("Введите цифры через пробел:");
+                string txt = Console.ReadLine();
+                int itog = 0;
+                string sItog = "";
+                for (int i = 0; i < txt.Length; i++)
                 {
-                    Console.Write(text[i]);
+                    if (isProbel(txt[i]))
+                    {
+                        itog += Convert.ToInt32(sItog);
+                        sItog = "";
+                    }
+                    else
+                    {
+                        sItog = sItog + txt[i];
+                    }
                 }
+                itog += Convert.ToInt32(sItog);
+                Console.WriteLine(itog);
                 Console.ReadLine();
             }
-
-
-            //Задача 4, попробовал выводить корабли относительно случайно, с использованием мс из времени
+            //Задание 3
             {
-                string[,] pole = new string[10, 10];
-                for (int i = 0; i < pole.GetLength(0); i++)
+                Console.WriteLine("Введите номер месяца");
+                string month = "";
+                do
                 {
-                    int k = DateTime.Now.Millisecond;
-                    k = k - (int)(k / 10) * 10;
-                    for (int j = 0; j < pole.GetLength(1); j++)
-                    {
-                        pole[i, j] = "O";
-                        if (j == k || (i == k / 2 && i == j) || (i == k / 3 && i == j))
-                        {
-                            pole[i, j] = "X";
+                    month = Console.ReadLine();
+                } while (CheckInput(month));
+                string numberSeason = GetSeasonNumber(month);
+                ConsoleWriteSeasonName(numberSeason);
+            }
 
-                        }
-                        Console.Write($"{pole[i, j]} ");
-                    }
-                    Console.WriteLine();
-                }
+            //Задание 4
+            {
+                Console.WriteLine("Введите число для расчета");
+                string getConsoleWrite = Console.ReadLine();
+                Fibonachi(Convert.ToInt32(getConsoleWrite));
+            }
 
-                //тут начинается код автоматической игры компа )
-                //Комп не видит поле и выбирает случайное место
-                //Если в случайном месте есть корабль - то стреляет иставит P - popal, если корабля нет - ставит M - mimo
-                //Если попадает в поле, куда уже стрелял, то начинает перебором искать поле, в которое ещё не стрелял и стреляет в него
-                //По итогу выводит информацию в консоль по шагам и матрицу выстрелов :) (делал в последний момент, поэтому не оптимизировал алгоритм, но по анализу все определяет правильно
-                string fight = "";
-                while (fight != "д" || fight != "н")
-                {
-                    Console.WriteLine("Запустить автоматический бой? (д\\н)");
+        }
 
-                    fight = Console.ReadLine();
-                    if (fight == "д")
-                    {
+        static void Fibonachi(int z)
+        {
+            FibonachiRaschet(0, 1, 0, z);
+            Console.ReadLine();
+        }
 
-                        bool opt = true;
-                        while (opt)
-                        {
+        static void FibonachiRaschet(long a, long b, long i, long max)
+        {
+            if (i == max + 1) return;
+            i++;
+            long c = a + b;
+            Console.Write($" {a}");
+            FibonachiRaschet(b, c, i, max);
+            return;
+        }
 
-                            int n = DateTime.Now.Millisecond;
-                            int p = (int)(n / 10) - (int)(n / 100) * 10; //получаем случайное значение р
-                            n = n - (int)(n / 10) * 10; //получаем случайное значение n
-                            if (pole[n, p] == "X") //стреляем в случайном месте, смотрим есть ли там корабль, если есть - помечаем попадание
-                            {
-                                Console.WriteLine($"Попадание в цель по адресу: {n} {p}");
-                            }
-                            else if (pole[n, p] == "O")
-                            {
-                                Console.WriteLine($"Промазали по адресу: {n} {p}");
-                                pole[n, p] = "M";
-                            }
-                            else
-                            {
-                                int z = 100;
-                                while (opt)
-                                {
+        static void ConsoleWriteSeasonName(string numberSeason)
+        {
+            switch (numberSeason)
+            {
+                case "Winter":
+                    Console.WriteLine("Зима");
+                    break;
+                case "Spring":
+                    Console.WriteLine("Весна");
+                    break;
+                case "Summer":
+                    Console.WriteLine("ЗЛето");
+                    break;
+                case "Autumn":
+                    Console.WriteLine("Осень");
+                    break;
+            }
+        }
 
-                                    if (n == 10)
-                                    {
-                                        n = 0;
-                                        p++;
-                                    }
-                                    if (p == 10)
-                                    {
-                                        p = 0;
+        static string GetSeasonNumber(string month)
+        {
+            int numberSeason = 0;
+            switch (month)
+            {
+                case "1":
+                case "2":
+                    numberSeason = 1;
+                    break;
+                case "3":
+                case "4":
+                case "5":
+                    numberSeason = 2;
+                    break;
+                case "6":
+                case "7":
+                case "8":
+                    numberSeason = 3;
+                    break;
+                case "9":
+                case "10":
+                case "11":
+                    numberSeason = 4;
+                    break;
+                case "12":
+                    numberSeason = 1;
+                    break;
+            }
+            season whatisseason = (season)numberSeason;
+            return whatisseason.ToString();
+        }
 
-                                    }
-                                    if (pole[n, p] == "X")
-                                    {
-                                        pole[n, p] = "P";
-                                        Console.WriteLine($"Попадание цель по адресу: {n} {p}");
-                                        break;
-                                    }
-                                    else if (pole[n, p] == "O")
-                                    {
-                                        Console.WriteLine($"Промазали по адресу: {n} {p}");
-                                        pole[n, p] = "M";
-                                    }
-                                    else
-                                    {
-                                        n++;
-                                    }
-                                    if (z == 0)
-                                    {
-                                        Console.WriteLine("Поиск кораблей закончен");
-                                        opt = false;
-                                        break;
-                                    }
-                                    z--;
-                                }
-                            }
-                        }
-                        for (int i = 0; i < 10; i++)
-                        {
-                            for (int j = 0; j < 10; j++)
-                            {
-                                Console.Write(pole[i, j] + " ");
-                            }
-                            Console.WriteLine();
-                        }
-                    }
-                    else if (fight == "н")
-                    {
-                        break;
-                    }
-                }
+        static bool CheckInput(string month)
+        {
+            bool value = true;
+            if (string.IsNullOrEmpty(month))
+            {
+                Console.WriteLine("Ошибка, ввелите число от 1 до 12");
+                return value;
 
             }
+            if (Convert.ToInt32(month) > 12 || Convert.ToInt32(month) < 1)
+            {
+                Console.WriteLine("Ошибка, ввелите число от 1 до 12");
+            }
+            else
+            {
+                value = false;
+            }
+
+            return value;
+        }
+        static string GetFullName(string FirstName, string LastName, string paronymc)
+        {
+            string FullName = $"{FirstName} {LastName} {paronymc}";
+            return FullName;
+        }
+
+
+        static string[] GetMassive(string one, string two, string tree)
+        {
+            string[] x = new string[3];
+            x[0] = one;
+            x[1] = two;
+            x[2] = tree;
+            return x;
+        }
+        static bool isProbel(char chari)
+        {
+            return chari == ' ' ? true : false;
+
 
         }
     }
