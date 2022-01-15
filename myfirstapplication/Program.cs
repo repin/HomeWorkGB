@@ -1,183 +1,119 @@
 ﻿using System;
+using System.IO;
+using System.Text.Json;
+using Newtonsoft.Json;
+
 
 namespace myfirstapplication
 {
     class Program
     {
-        enum season
-        {
-            Winter = 1,
-            Spring = 2,
-            Summer = 3,
-            Autumn = 4
-        }
         static void Main(string[] args)
         {
-            //задание 1
+            
+            //Задание 1
             {
-                string[] Name;
-                string[] LastName;
-                string[] Paronymc;
-                Name = GetMassive("Вася", "Петя", "Дима");
-                LastName = GetMassive("Иванов", "Петров", "Сидовров");
-                Paronymc = GetMassive("Владимирович", "Инокеньтьевич", "Абрамович");
-                for (int i = 0; i < Name.Length; i++)
-                {
-                    string FullName = GetFullName(Name[i], LastName[i], Paronymc[i]);
-                    Console.WriteLine($"ФИО: {FullName}");
-                }
-                Console.ReadLine();
-
+                Console.WriteLine("Ввежите произвольный набор данных"); //запрос данных
+                string inputDAta = Console.ReadLine();//чтение данных
+                File.WriteAllText(path: "example.txt", inputDAta);//запись данных в файл
+                Console.WriteLine(File.Exists(path: "example.txt")); //проверка, что файл создан
+                Console.ReadKey(); //Ожидание действия пользователя
             }
+            
             //Задание 2
             {
-                Console.WriteLine("Введите цифры через пробел:");
-                string txt = Console.ReadLine();
-                int itog = 0;
-                string sItog = "";
-                for (int i = 0; i < txt.Length; i++)
-                {
-                    if (isProbel(txt[i]))
-                    {
-                        itog += Convert.ToInt32(sItog);
-                        sItog = "";
-                    }
-                    else
-                    {
-                        sItog = sItog + txt[i];
-                    }
-                }
-                itog += Convert.ToInt32(sItog);
-                Console.WriteLine(itog);
-                Console.ReadLine();
+                File.AppendAllText(path: "startup.txt", contents: DateTime.Now.ToString("HH:mm:ss") + Environment.NewLine);
+                Console.WriteLine($"В файл добавлена следующая строка {DateTime.Now.ToString("HH:mm:ss")}");            
             }
+            
             //Задание 3
             {
-                Console.WriteLine("Введите номер месяца");
-                string month = "";
-                do
+                Console.WriteLine("Введите с клавиатуры произвольный набор чисел от 0 до 255");
+                string inputDAta = Console.ReadLine();
+                string[] array = inputDAta.Split(' ');
+                byte[] arrayb = new byte[array.Length];
+                for (int i=0;i<array.Length;i++)
                 {
-                    month = Console.ReadLine();
-                } while (CheckInput(month));
-                string numberSeason = GetSeasonNumber(month);
-                ConsoleWriteSeasonName(numberSeason);
+                    arrayb[i] = Convert.ToByte(array[i]);
+                }
+                File.WriteAllBytes("bytes.bin", arrayb);
+                Console.WriteLine("Файл записан");
+                byte[] arrayf = File.ReadAllBytes("bytes.bin");
             }
-
+            
             //Задание 4
+            { 
+                string path = DirectoryExists();
+                Console.WriteLine("Как глубоко погружаемся? Введите число:");
+                int depth = Convert.ToInt32(Console.ReadLine());
+                string nameFile = "FilePath.txt";
+                File.WriteAllText(nameFile, "");
+                SaveTreePath(path, nameFile, "", depth);
+
+            }
+            
+            //задание 5
             {
-                Console.WriteLine("Введите число для расчета");
-                string getConsoleWrite = Console.ReadLine();
-                Fibonachi(Convert.ToInt32(getConsoleWrite));
+                ToDo toDo = new ToDo();
+                if (toDo.fileExist)
+                {
+                    string json = File.ReadAllText("ToDo.json");
+                    toDo = Newtonsoft.Json.JsonConvert.DeserializeObject<ToDo>(json);
+
+                }
+                toDo.Hello();
+                while (true)
+                {
+                    string resume;
+                    resume = toDo.Command(Console.ReadLine());
+                    if (toDo.exit)
+                    {
+                        string jsonOut = JsonConvert.SerializeObject(toDo);
+                        File.WriteAllText("ToDo.json",jsonOut);
+                        Console.WriteLine(jsonOut);
+                        Console.ReadLine();
+                        break;
+                    }
+                }
             }
 
         }
 
-        static void Fibonachi(int z)
+        static string DirectoryExists()
         {
-            FibonachiRaschet(0, 1, 0, z);
-            Console.ReadLine();
-        }
-
-        static void FibonachiRaschet(long a, long b, long i, long max)
-        {
-            if (i == max + 1) return;
-            i++;
-            long c = a + b;
-            Console.Write($" {a}");
-            FibonachiRaschet(b, c, i, max);
-            return;
-        }
-
-        static void ConsoleWriteSeasonName(string numberSeason)
-        {
-            switch (numberSeason)
+            Console.WriteLine("Введите существующий путь к папке:");
+            string path;
+            while (true)
             {
-                case "Winter":
-                    Console.WriteLine("Зима");
-                    break;
-                case "Spring":
-                    Console.WriteLine("Весна");
-                    break;
-                case "Summer":
-                    Console.WriteLine("ЗЛето");
-                    break;
-                case "Autumn":
-                    Console.WriteLine("Осень");
-                    break;
+                path = Console.ReadLine();
+                
+                if (string.IsNullOrEmpty(path) || !Directory.Exists(path))
+                {
+                    Console.WriteLine("Введите корректный путь к папке");
+                    continue;
+                    
+                }
+                else
+                {
+                    return path;
+                }
             }
         }
 
-        static string GetSeasonNumber(string month)
+        static void SaveTreePath(string path, string nameFile, string otstup, int depth)
         {
-            int numberSeason = 0;
-            switch (month)
+            string[] entries = Directory.GetFileSystemEntries(path);
+            foreach (string i in entries)
             {
-                case "1":
-                case "2":
-                    numberSeason = 1;
-                    break;
-                case "3":
-                case "4":
-                case "5":
-                    numberSeason = 2;
-                    break;
-                case "6":
-                case "7":
-                case "8":
-                    numberSeason = 3;
-                    break;
-                case "9":
-                case "10":
-                case "11":
-                    numberSeason = 4;
-                    break;
-                case "12":
-                    numberSeason = 1;
-                    break;
+                string text = otstup + Path.GetFileName(i);
+                Console.WriteLine(text);
+                File.AppendAllText(nameFile, text+Environment.NewLine);
+                if (otstup.Length == depth) return;
+                if (Directory.Exists(i))
+                {
+                    SaveTreePath(i, nameFile, otstup+"-", depth);
+                }
             }
-            season whatisseason = (season)numberSeason;
-            return whatisseason.ToString();
-        }
-
-        static bool CheckInput(string month)
-        {
-            bool value = true;
-            if (string.IsNullOrEmpty(month))
-            {
-                Console.WriteLine("Ошибка, ввелите число от 1 до 12");
-                return value;
-
-            }
-            if (Convert.ToInt32(month) > 12 || Convert.ToInt32(month) < 1)
-            {
-                Console.WriteLine("Ошибка, ввелите число от 1 до 12");
-            }
-            else
-            {
-                value = false;
-            }
-
-            return value;
-        }
-        static string GetFullName(string FirstName, string LastName, string paronymc)
-        {
-            string FullName = $"{FirstName} {LastName} {paronymc}";
-            return FullName;
-        }
-
-
-        static string[] GetMassive(string one, string two, string tree)
-        {
-            string[] x = new string[3];
-            x[0] = one;
-            x[1] = two;
-            x[2] = tree;
-            return x;
-        }
-        static bool isProbel(char chari)
-        {
-            return chari == ' ' ? true : false;
-
         }
     }
 }
